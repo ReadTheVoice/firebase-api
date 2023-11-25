@@ -23,6 +23,7 @@ const verifyToken = (handler) => {
 
 const signUpFunction = require("./src/signup.js");
 const logInFunction = require("./src/login.js");
+const verifyTokenFunction = require("./src/verifytoken.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
@@ -34,4 +35,10 @@ exports.logIn = onRequest({
   region: "europe-west3",
 }, verifyToken(async (res, req) => {
   logInFunction.logIn(res, req);
+}));
+
+exports.verifyToken = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (res, req) => {
+  verifyTokenFunction.verifyToken(res, req);
 }));
