@@ -23,7 +23,6 @@ const verifyToken = (handler) => {
 
 const signUpFunction = require("./src/signup.js");
 const logInFunction = require("./src/login.js");
-const verifyTokenFunction = require("./src/verifytoken.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
