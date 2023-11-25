@@ -11,8 +11,6 @@ const {
 
 const templatePath = path.join(__dirname, "../tpl/verif_email.html");
 
-admin.initializeApp();
-
 exports.signUp = async function(req, res) {
   try {
     const {
