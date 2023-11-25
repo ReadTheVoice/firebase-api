@@ -1,6 +1,8 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 
+admin.initializeApp();
+
 exports.signUp = async function(req, res) {
   try {
     const {
