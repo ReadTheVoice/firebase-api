@@ -1,7 +1,10 @@
+const admin = require("firebase-admin");
 const {
   onRequest,
 } = require("firebase-functions/v2/https");
 const logger = require("firebase-functions/logger");
+
+admin.initializeApp();
 
 const verifyToken = (handler) => {
   return async (req, res) => {
@@ -19,9 +22,16 @@ const verifyToken = (handler) => {
 };
 
 const signUpFunction = require("./src/signup.js");
+const logInFunction = require("./src/login.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
 }, verifyToken(async (res, req) => {
   signUpFunction.signUp(res, req);
+}));
+
+exports.logIn = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (res, req) => {
+  logInFunction.logIn(res, req);
 }));
