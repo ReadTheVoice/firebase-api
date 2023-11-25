@@ -1,7 +1,7 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 
-exports.signUp = async function(res, req) {
+exports.signUp = async function(req, res) {
   try {
     const {
       email,
