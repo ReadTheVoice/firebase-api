@@ -12,6 +12,14 @@ exports.signUp = async function(req, res) {
       lastName,
     } = req.body;
 
+    const existingUser = await admin.auth().getUserByEmail(email);
+
+    if (existingUser) {
+      return res.status(400).json({
+        error: "Email already exists",
+      });
+    }
+
     const userRecord = await admin.auth().createUser({
       email,
       password,
