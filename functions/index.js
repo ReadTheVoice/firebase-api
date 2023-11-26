@@ -25,6 +25,8 @@ const signUpFunction = require("./src/signup.js");
 const logInFunction = require("./src/login.js");
 const verifyTokenFunction = require("./src/verifytoken.js");
 const resetPasswordFunction = require("./src/resetpassword.js");
+const updateUserEmailFunction = require("./src/updateUserEmail.js");
+const updateUserProfileFunction = require("./src/updateUserProfile.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
@@ -48,4 +50,16 @@ exports.resetPassword = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
   resetPasswordFunction.resetPassword(req, res);
+}));
+
+exports.updateUserEmail = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  updateUserEmailFunction.updateUserEmail(req, res);
+}));
+
+exports.updateUserProfile = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  updateUserProfileFunction.updateUserProfile(req, res);
 }));
