@@ -1,13 +1,9 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
-const handlebars = require("handlebars");
+const {
+  sendEmail,
+} = require("./shared/emailSender");
 const path = require("path");
-const {
-  readHTMLFile,
-} = require("./shared/readHTMLFile");
-const {
-  transporter,
-} = require("./shared/emailTransporter");
 
 const templatePath = path.join(__dirname, "../tpl/verif_email.html");
 
@@ -43,34 +39,16 @@ exports.signUp = async function(req, res) {
 
     await admin.auth().generateEmailVerificationLink(email)
         .then((link) => {
-          readHTMLFile(templatePath, (error, html) => {
-            if (error) {
-              logger.error("Error reading template file:", error);
-              return res.status(500).json({
-                error: "Registration error",
-              });
-            }
-            const template = handlebars.compile(html);
-            const replacements = {
+          const mailOptions = {
+            from: "no-reply@readthevoice.com",
+            to: email,
+            subject: "Please verify your account",
+            replacements: {
               email: email,
               link: link,
-            };
-            const htmlToSend = template(replacements);
-            const mailOptions = {
-              from: "no-reply@readthevoice.com",
-              to: email,
-              subject: "Please verify your account",
-              html: htmlToSend,
-            };
-            transporter.sendMail(mailOptions, (error, response) => {
-              if (error) {
-                logger.error("Error when sending email:", error);
-                return res.status(500).json({
-                  error: "Registration error",
-                });
-              }
-            });
-          });
+            },
+          };
+          sendEmail(templatePath, mailOptions, res, "Registration error");
         })
         .catch((error) => {
           logger.error("Error with verification link:", error);
@@ -78,6 +56,7 @@ exports.signUp = async function(req, res) {
             error: "Registration error",
           });
         });
+
 
     return res.status(200).json({
       message: "Successful registration, verification email sent",
