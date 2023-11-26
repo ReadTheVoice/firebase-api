@@ -28,24 +28,24 @@ const resetPasswordFunction = require("./src/resetpassword.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
-}, verifyToken(async (res, req) => {
-  signUpFunction.signUp(res, req);
+}, verifyToken(async (req, res) => {
+  signUpFunction.signUp(req, res);
 }));
 
 exports.logIn = onRequest({
   region: "europe-west3",
-}, verifyToken(async (res, req) => {
-  logInFunction.logIn(res, req);
+}, verifyToken(async (req, res) => {
+  logInFunction.logIn(req, res);
 }));
 
 exports.verifyToken = onRequest({
   region: "europe-west3",
-}, verifyToken(async (res, req) => {
-  verifyTokenFunction.verifyToken(res, req);
+}, verifyToken(async (req, res) => {
+  verifyTokenFunction.verifyToken(req, res);
 }));
 
 exports.resetPassword = onRequest({
   region: "europe-west3",
-}, verifyToken(async (res, req) => {
-  resetPasswordFunction.resetPassword(res, req);
+}, verifyToken(async (req, res) => {
+  resetPasswordFunction.resetPassword(req, res);
 }));
