@@ -24,6 +24,7 @@ const verifyToken = (handler) => {
 const signUpFunction = require("./src/signUp.js");
 const logInFunction = require("./src/logIn.js");
 const verifyTokenFunction = require("./src/verifyUserToken.js");
+const deleteAccountFunction = require("./src/deleteUserAccount.js");
 const resetPasswordFunction = require("./src/resetUserPassword.js");
 const updateUserEmailFunction = require("./src/updateUserEmail.js");
 const updateUserProfileFunction = require("./src/updateUserProfile.js");
@@ -50,6 +51,12 @@ exports.resetPassword = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
   resetPasswordFunction.resetPassword(req, res);
+}));
+
+exports.deleteAccount = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  deleteAccountFunction.deleteAccount(req, res);
 }));
 
 exports.updateUserEmail = onRequest({
