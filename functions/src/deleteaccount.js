@@ -5,7 +5,7 @@ const {
 } = require("./emailSender");
 const path = require("path");
 
-const templatePath = path.join(__dirname, "../tpl/account_deletion.html");
+const templatePath = path.join(__dirname, "../tpl/delete_account.html");
 
 exports.resetPassword = async function(req, res) {
   try {
