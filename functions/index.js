@@ -21,10 +21,10 @@ const verifyToken = (handler) => {
   };
 };
 
-const signUpFunction = require("./src/signup.js");
-const logInFunction = require("./src/login.js");
-const verifyTokenFunction = require("./src/verifytoken.js");
-const resetPasswordFunction = require("./src/resetpassword.js");
+const signUpFunction = require("./src/signUp.js");
+const logInFunction = require("./src/logIn.js");
+const verifyTokenFunction = require("./src/verifyUserToken.js");
+const resetPasswordFunction = require("./src/resetUserPassword.js");
 const updateUserEmailFunction = require("./src/updateUserEmail.js");
 const updateUserProfileFunction = require("./src/updateUserProfile.js");
 
