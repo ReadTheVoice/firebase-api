@@ -24,9 +24,9 @@ exports.updateUserProfile = async function(req, res) {
         error: "User not found",
       });
     } else {
-      await admin.firestore().collection("users").doc(token).set({
-        firstName,
-        lastName,
+      await admin.firestore().collection("users").doc(token).update({
+        firstName: firstName,
+        lastName: lastName,
       });
       return res.status(200).json({
         message: "User profile updated",
