@@ -58,8 +58,8 @@ exports.updateUserEmail = async function(req, res) {
               error: "Email update error",
             });
           });
-      await admin.firestore().collection("users").doc(token).set({
-        email,
+      await admin.firestore().collection("users").doc(token).update({
+        email: email,
       });
 
       return res.status(200).json({
