@@ -63,7 +63,7 @@ exports.signUp = async function(req, res) {
     });
   } catch (error) {
     logger.error("Registration error:", error);
-    return res.status(500).json({
+    return res.status(200).json({
       error: "REGISTRATION_ERROR",
     });
   }
