@@ -12,16 +12,16 @@ exports.updateUserProfile = async function(req, res) {
     const user = await admin.auth().getUser(token);
 
     if (!user) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
     const userSnapshot = await admin.firestore().collection("users").doc(token).get();
 
     if (!userSnapshot.exists) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     } else {
       await admin.firestore().collection("users").doc(token).update({
@@ -29,13 +29,13 @@ exports.updateUserProfile = async function(req, res) {
         lastName: lastName,
       });
       return res.status(200).json({
-        message: "User profile updated",
+        message: "USER_PROFILE_UPDATED",
       });
     }
   } catch (error) {
     logger.error("Error updating user profile:", error);
-    return res.status(500).json({
-      error: "Error updating user profile",
+    return res.status(200).json({
+      error: "ERROR_UPDATING_USER_PROFILE",
     });
   }
 };
