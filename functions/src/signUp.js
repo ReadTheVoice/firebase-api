@@ -20,8 +20,8 @@ exports.signUp = async function(req, res) {
       await admin.auth().getUserByEmail(email);
     } catch (error) {
       if (error.code !== "auth/user-not-found") {
-        return res.status(400).json({
-          error: "Email already exists",
+        return res.status(200).json({
+          error: "EMAIL_ALREADY_EXISTS",
         });
       }
     }
@@ -48,23 +48,23 @@ exports.signUp = async function(req, res) {
               link: link,
             },
           };
-          sendEmail(templatePath, mailOptions, res, "Registration error");
+          sendEmail(templatePath, mailOptions, res, "REGISTRATION_ERROR");
         })
         .catch((error) => {
           logger.error("Error with verification link:", error);
-          return res.status(500).json({
-            error: "Registration error",
+          return res.status(200).json({
+            error: "REGISTRATION_ERROR",
           });
         });
 
 
     return res.status(200).json({
-      message: "Successful registration, verification email sent",
+      message: "SUCCESSFULLY_REGISTERED",
     });
   } catch (error) {
     logger.error("Registration error:", error);
     return res.status(500).json({
-      error: "Registration error",
+      error: "REGISTRATION_ERROR",
     });
   }
 };
