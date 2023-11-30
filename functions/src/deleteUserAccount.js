@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
 const {
   sendEmail,
-} = require("./emailSender");
+} = require("./shared/emailSender");
 const path = require("path");
 
 const templatePath = path.join(__dirname, "../tpl/delete_account.html");
