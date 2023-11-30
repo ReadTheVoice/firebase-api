@@ -18,7 +18,7 @@ function sendEmail(templatePath, mailOptions, res, errorMessage) {
   readHTMLFile(templatePath, (error, html) => {
     if (error) {
       logger.error("Error reading template file:", error);
-      return res.status(500).json({
+      return res.status(200).json({
         error: errorMessage,
       });
     }
@@ -29,7 +29,7 @@ function sendEmail(templatePath, mailOptions, res, errorMessage) {
     transporter.sendMail(mailOptions, (error, response) => {
       if (error) {
         logger.error("Error when sending email:", error);
-        return res.status(500).json({
+        return res.status(200).json({
           error: errorMessage,
         });
       }
