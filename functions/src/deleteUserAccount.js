@@ -17,16 +17,16 @@ exports.resetPassword = async function(req, res) {
     try {
       user = await admin.auth().getUser(token);
     } catch (error) {
-      return res.status(400).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
     const userSnapshot = await admin.firestore().collection("users").doc(user.uid).get();
 
     if (!userSnapshot.exists) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
@@ -49,15 +49,15 @@ exports.resetPassword = async function(req, res) {
         lastName: lastName,
       },
     };
-    sendEmail(templatePath, mailOptions, res, "Account deletion error");
+    sendEmail(templatePath, mailOptions, res, "ACCOUNT_DELETION_ERROR");
 
     return res.status(200).json({
-      message: "Account deleted successfully",
+      message: "ACCOUNT_DELETED_SUCCESSFULLY",
     });
   } catch (error) {
     logger.error("Account deletion error:", error);
-    return res.status(500).json({
-      error: "Account deletion error",
+    return res.status(200).json({
+      error: "ACCOUNT_DELETION_ERROR",
     });
   }
 };
