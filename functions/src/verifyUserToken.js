@@ -10,16 +10,16 @@ exports.verifyToken = async function(req, res) {
     const user = await admin.auth().getUser(token);
 
     if (!user) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
     const userSnapshot = await admin.firestore().collection("users").doc(token).get();
 
     if (!userSnapshot.exists) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
@@ -38,7 +38,7 @@ exports.verifyToken = async function(req, res) {
   } catch (error) {
     logger.error("Token verification error:", error);
     return res.status(401).json({
-      error: "Token verification error",
+      error: "TOKEN_VERIFICATION_ERROR",
     });
   }
 };
