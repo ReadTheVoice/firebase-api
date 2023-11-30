@@ -9,19 +9,6 @@ exports.logIn = async function(req, res) {
       password,
     } = req.body;
 
-    await admin.auth().getUserByEmail(email).then((userRecord) => {
-      if (!userRecord.emailVerified) {
-        return res.status(400).json({
-          error: "Email not verified.",
-        });
-      }
-    }).catch((error) => {
-      logger.error("Login error:", error);
-      return res.status(500).json({
-        error: "Login error",
-      });
-    });
-
     const signInEndpoint = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=" + process.env.FB_API_KEY;
 
     let userId = null;
@@ -31,6 +18,18 @@ exports.logIn = async function(req, res) {
       returnSecureToken: true,
     }).then(async (res) => {
       userId = res.data.localId;
+      await admin.auth().getUserByEmail(email).then((userRecord) => {
+        if (!userRecord.emailVerified) {
+          return res.status(200).json({
+            error: "EMAIL_NOT_VERIFIED",
+          });
+        }
+      }).catch((error) => {
+        logger.error("Login error:", error);
+        return res.status(200).json({
+          error: "LOGIN_ERROR",
+        });
+      });
     });
 
     return res.status(200).json({
@@ -38,8 +37,8 @@ exports.logIn = async function(req, res) {
     });
   } catch (error) {
     logger.error("Login error:", error);
-    return res.status(500).json({
-      error: "Login error",
+    return res.status(200).json({
+      error: "LOGIN_ERROR",
     });
   }
 };
