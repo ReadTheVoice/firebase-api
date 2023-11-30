@@ -17,14 +17,17 @@ exports.signUp = async function(req, res) {
     } = req.body;
 
     try {
-      await admin.auth().getUserByEmail(email);
-    } catch (error) {
-      if (error.code !== "auth/user-not-found") {
+      const isUser = await admin.auth().getUserByEmail(email);
+
+      if (isUser) {
         return res.status(200).json({
           error: "EMAIL_ALREADY_EXISTS",
         });
       }
+    } catch (error) {
+      /* empty */
     }
+
 
     const userRecord = await admin.auth().createUser({
       email,
