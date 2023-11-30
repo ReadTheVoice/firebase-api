@@ -10,13 +10,20 @@ const templatePath = path.join(__dirname, "../tpl/reset_password.html");
 exports.resetPassword = async function(req, res) {
   try {
     const {
-      token,
+      email,
     } = req.body;
 
     let user = null;
     try {
-      user = await admin.auth().getUser(token);
+      user = await admin.auth().getUserByEmail(email);
     } catch (error) {
+      logger.error("Error fetching user by email:", error);
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
+      });
+    }
+
+    if (!user) {
       return res.status(200).json({
         error: "USER_NOT_FOUND",
       });
@@ -32,7 +39,6 @@ exports.resetPassword = async function(req, res) {
 
     const userData = userSnapshot.data();
     const {
-      email,
       firstName,
       lastName,
     } = userData;
