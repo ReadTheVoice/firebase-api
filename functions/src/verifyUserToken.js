@@ -37,7 +37,7 @@ exports.verifyToken = async function(req, res) {
     });
   } catch (error) {
     logger.error("Token verification error:", error);
-    return res.status(401).json({
+    return res.status(200).json({
       error: "TOKEN_VERIFICATION_ERROR",
     });
   }
