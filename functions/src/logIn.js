@@ -16,9 +16,9 @@ exports.logIn = async function(req, res) {
       email: email,
       password: password,
       returnSecureToken: true,
-    }).then(async (res) => {
-      userId = res.data.localId;
-      await admin.auth().getUserByEmail(email).then((userRecord) => {
+    }).then(async (axiosRes) => {
+      userId = axiosRes.data.localId;
+      await admin.auth().getUser(userId).then((userRecord) => {
         if (!userRecord.emailVerified) {
           return res.status(200).json({
             error: "EMAIL_NOT_VERIFIED",
@@ -29,6 +29,11 @@ exports.logIn = async function(req, res) {
         return res.status(200).json({
           error: "LOGIN_ERROR",
         });
+      });
+    }).catch((error) => {
+      logger.error("Login error:", error);
+      return res.status(200).json({
+        error: "LOGIN_ERROR",
       });
     });
 
