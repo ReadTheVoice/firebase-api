@@ -17,8 +17,8 @@ exports.updateUserEmail = async function(req, res) {
     const user = await admin.auth().getUser(token);
 
     if (!user) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
@@ -28,8 +28,8 @@ exports.updateUserEmail = async function(req, res) {
 
     const fbUserEmail = await admin.auth().getUserByEmail(email);
     if (fbUserEmail) {
-      return res.status(400).json({
-        error: "Email already used",
+      return res.status(200).json({
+        error: "EMAIL_ALREADY_USED",
       });
     }
 
@@ -50,12 +50,12 @@ exports.updateUserEmail = async function(req, res) {
                 link: link,
               },
             };
-            sendEmail(templatePath, mailOptions, res, "Email update error");
+            sendEmail(templatePath, mailOptions, res, "EMAIL_UPDATE_ERROR");
           })
           .catch((error) => {
             logger.error("Error with verification link:", error);
-            return res.status(500).json({
-              error: "Email update error",
+            return res.status(200).json({
+              error: "EMAIL_UPDATE_ERROR",
             });
           });
       await admin.firestore().collection("users").doc(token).update({
@@ -63,17 +63,17 @@ exports.updateUserEmail = async function(req, res) {
       });
 
       return res.status(200).json({
-        message: "User email updated",
+        message: "USER_EMAIL_UPDATED",
       });
     } else {
-      return res.status(304).json({
-        message: "Not modified",
+      return res.status(200).json({
+        error: "USER_EMAIL_NOT_UPDATED",
       });
     }
   } catch (error) {
     logger.error("Error updating user email:", error);
-    return res.status(500).json({
-      error: "Error updating user",
+    return res.status(200).json({
+      error: "ERROR_UPDATING_USER_EMAIL",
     });
   }
 };
