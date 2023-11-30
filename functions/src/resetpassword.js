@@ -17,16 +17,16 @@ exports.resetPassword = async function(req, res) {
     try {
       user = await admin.auth().getUser(token);
     } catch (error) {
-      return res.status(400).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
     const userSnapshot = await admin.firestore().collection("users").doc(user.uid).get();
 
     if (!userSnapshot.exists) {
-      return res.status(404).json({
-        error: "User not found",
+      return res.status(200).json({
+        error: "USER_NOT_FOUND",
       });
     }
 
@@ -50,22 +50,22 @@ exports.resetPassword = async function(req, res) {
               link: link,
             },
           };
-          sendEmail(templatePath, mailOptions, res, "Password reset error");
+          sendEmail(templatePath, mailOptions, res, "PASSWORD_RESET_ERROR");
         })
         .catch((error) => {
           logger.error("Error with password reset link:", error);
-          return res.status(500).json({
-            error: "Password reset error",
+          return res.status(200).json({
+            error: "PASSWORD_RESET_ERROR",
           });
         });
 
     return res.status(200).json({
-      message: "Password reset email sent",
+      message: "PASSWORD_RESET_EMAIL_SENT",
     });
   } catch (error) {
     logger.error("Password reset error:", error);
-    return res.status(500).json({
-      error: "Password reset error",
+    return res.status(200).json({
+      error: "PASSWORD_RESET_ERROR",
     });
   }
 };
