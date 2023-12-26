@@ -1,5 +1,8 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
+const {
+  verifyTokenAndGetUserId,
+} = require("./shared/verifyJwtToken");
 
 exports.verifyToken = async function(req, res) {
   try {
@@ -7,7 +10,17 @@ exports.verifyToken = async function(req, res) {
       token,
     } = req.body;
 
-    const user = await admin.auth().getUser(token);
+    const result = verifyTokenAndGetUserId(token);
+
+    if (result.error) {
+      return res.status(200).json({
+        error: result.error,
+      });
+    }
+
+    const userId = result.userId;
+
+    const user = await admin.auth().getUser(userId);
 
     if (!user) {
       return res.status(200).json({
@@ -15,7 +28,7 @@ exports.verifyToken = async function(req, res) {
       });
     }
 
-    const userSnapshot = await admin.firestore().collection("users").doc(token).get();
+    const userSnapshot = await admin.firestore().collection("users").doc(userId).get();
 
     if (!userSnapshot.exists) {
       return res.status(200).json({
