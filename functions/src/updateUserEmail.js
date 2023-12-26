@@ -4,6 +4,9 @@ const {
   sendEmail,
 } = require("./shared/emailSender");
 const path = require("path");
+const {
+  verifyTokenAndGetUserId,
+} = require("./shared/verifyJwtToken");
 
 const templatePath = path.join(__dirname, "../tpl/verif_email_update.html");
 
@@ -14,7 +17,17 @@ exports.updateUserEmail = async function(req, res) {
       token,
     } = req.body;
 
-    const user = await admin.auth().getUser(token);
+    const result = verifyTokenAndGetUserId(token);
+
+    if (result.error) {
+      return res.status(200).json({
+        error: result.error,
+      });
+    }
+
+    const userId = result.userId;
+
+    const user = await admin.auth().getUser(userId);
 
     if (!user) {
       return res.status(200).json({
@@ -26,15 +39,18 @@ exports.updateUserEmail = async function(req, res) {
     const firstName = user.firstName;
     const lastName = user.lastName;
 
-    const fbUserEmail = await admin.auth().getUserByEmail(email);
-    if (fbUserEmail) {
-      return res.status(200).json({
-        error: "EMAIL_ALREADY_USED",
-      });
-    }
-
     if (userEmail !== email) {
-      await admin.auth().updateUser(token, {
+      try {
+        const fbUserEmail = await admin.auth().getUserByEmail(email);
+        if (fbUserEmail) {
+          return res.status(200).json({
+            error: "EMAIL_ALREADY_USED",
+          });
+        }
+      } catch (error) {
+        /* empty */
+      }
+      await admin.auth().updateUser(userId, {
         email,
         emailVerified: false,
       });
@@ -58,7 +74,7 @@ exports.updateUserEmail = async function(req, res) {
               error: "EMAIL_UPDATE_ERROR",
             });
           });
-      await admin.firestore().collection("users").doc(token).update({
+      await admin.firestore().collection("users").doc(userId).update({
         email: email,
       });
 
