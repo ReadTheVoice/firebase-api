@@ -4,18 +4,31 @@ const {
   sendEmail,
 } = require("./shared/emailSender");
 const path = require("path");
+const {
+  verifyTokenAndGetUserId,
+} = require("./shared/verifyJwtToken");
 
 const templatePath = path.join(__dirname, "../tpl/delete_account.html");
 
-exports.resetPassword = async function(req, res) {
+exports.deleteAccount = async function(req, res) {
   try {
     const {
       token,
     } = req.body;
 
+    const result = verifyTokenAndGetUserId(token);
+
+    if (result.error) {
+      return res.status(200).json({
+        error: result.error,
+      });
+    }
+
+    const userId = result.userId;
+
     let user = null;
     try {
-      user = await admin.auth().getUser(token);
+      user = await admin.auth().getUser(userId);
     } catch (error) {
       return res.status(200).json({
         error: "USER_NOT_FOUND",
@@ -39,6 +52,7 @@ exports.resetPassword = async function(req, res) {
     await admin.auth().deleteUser(user.uid);
 
     await admin.firestore().collection("users").doc(user.uid).delete();
+    await admin.firestore().collection("tokens").doc(user.uid).delete();
 
     const mailOptions = {
       from: "no-reply@readthevoice.com",
