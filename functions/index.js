@@ -12,7 +12,7 @@ const verifyToken = (handler) => {
 
     if (!token || token !== process.env.ACCESS_TOKEN) {
       logger.error("Unauthorized - Invalid token");
-      return res.status(401).json({
+      return res.status(200).json({
         error: "Unauthorized - Invalid token",
       });
     }
@@ -23,6 +23,7 @@ const verifyToken = (handler) => {
 
 const signUpFunction = require("./src/signUp.js");
 const logInFunction = require("./src/logIn.js");
+const logOutFunction = require("./src/logOut.js");
 const verifyTokenFunction = require("./src/verifyUserToken.js");
 const deleteAccountFunction = require("./src/deleteUserAccount.js");
 const resetPasswordFunction = require("./src/resetUserPassword.js");
@@ -39,6 +40,12 @@ exports.logIn = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
   logInFunction.logIn(req, res);
+}));
+
+exports.logOut = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  logOutFunction.logOut(req, res);
 }));
 
 exports.verifyToken = onRequest({
