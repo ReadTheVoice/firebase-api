@@ -23,6 +23,19 @@ exports.logIn = async function(req, res) {
     }).then(async (axiosRes) => {
       userId = axiosRes.data.localId;
 
+      await admin.auth().getUser(userId).then((userRecord) => {
+        if (!userRecord.emailVerified) {
+          return res.status(200).json({
+            error: "EMAIL_NOT_VERIFIED",
+          });
+        }
+      }).catch((error) => {
+        logger.error("Login error:", error);
+        return res.status(200).json({
+          error: "LOGIN_ERROR",
+        });
+      });
+
       jwtToken = jwt.sign({
         userId,
       }, process.env.JWT_SECRET, {
