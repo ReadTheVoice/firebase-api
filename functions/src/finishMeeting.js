@@ -27,20 +27,30 @@ exports.finishMeeting = async function(req, res) {
       });
     }
 
-    if (meetingDoc.data().creator !== userId) {
+    const meetingData = meetingDoc.data();
+    if (meetingData.creator !== userId) {
       return res.status(200).json({
         error: "UNAUTHORIZED_ACCESS",
       });
     }
 
-    await meetingRef.update({
-      isFinished: true,
-      endDate: admin.firestore.FieldValue.serverTimestamp(),
-    });
+    if (meetingData.isTranscriptAccessibleAfter) {
+      await meetingRef.update({
+        isFinished: true,
+        endDate: admin.firestore.FieldValue.serverTimestamp(),
+      });
+      return res.status(200).json({
+        message: "MEETING_FINISHED",
+      });
+    } else {
+      await meetingRef.delete();
 
-    return res.status(200).json({
-      message: "MEETING_FINISHED",
-    });
+      const transcriptRef = admin.database().ref(`transcripts/${meetingId}`);
+      await transcriptRef.remove();
+      return res.status(200).json({
+        message: "MEETING_DELETED",
+      });
+    }
   } catch (error) {
     logger.error("Error finishing meeting:", error);
     return res.status(200).json({
