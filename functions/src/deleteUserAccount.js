@@ -1,12 +1,8 @@
 const admin = require("firebase-admin");
 const logger = require("firebase-functions/logger");
-const {
-  sendEmail,
-} = require("./shared/emailSender");
+const sendEmail = require("./shared/emailSender").sendEmail;
 const path = require("path");
-const {
-  verifyTokenAndGetUserId,
-} = require("./shared/verifyJwtToken");
+const verifyTokenAndGetUserId = require("./shared/verifyJwtToken").verifyTokenAndGetUserId;
 
 const templatePath = path.join(__dirname, "../tpl/delete_account.html");
 
@@ -15,9 +11,7 @@ exports.deleteAccount = async function(req, res) {
     const {
       token,
     } = req.body;
-
     const result = verifyTokenAndGetUserId(token);
-
     if (result.error) {
       return res.status(200).json({
         error: result.error,
@@ -36,7 +30,6 @@ exports.deleteAccount = async function(req, res) {
     }
 
     const userSnapshot = await admin.firestore().collection("users").doc(user.uid).get();
-
     if (!userSnapshot.exists) {
       return res.status(200).json({
         error: "USER_NOT_FOUND",
@@ -49,10 +42,16 @@ exports.deleteAccount = async function(req, res) {
       firstName,
       lastName,
     } = userData;
-    await admin.auth().deleteUser(user.uid);
+
+    const meetingsSnapshot = await admin.firestore().collection("meetings").where("creator", "==", userId).get();
+    meetingsSnapshot.forEach(async (doc) => {
+      await admin.firestore().collection("meetings").doc(doc.id).delete();
+      await admin.database().ref(`transcripts/${doc.id}`).remove();
+    });
 
     await admin.firestore().collection("users").doc(user.uid).delete();
     await admin.firestore().collection("tokens").doc(user.uid).delete();
+    await admin.auth().deleteUser(user.uid);
 
     const mailOptions = {
       from: "no-reply@readthevoice.com",
