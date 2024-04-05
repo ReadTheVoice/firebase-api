@@ -65,6 +65,9 @@ exports.resetPassword = async function(req, res) {
           });
         });
 
+    await admin.firestore().collection("tokens").doc(user.uid).delete();
+
+
     return res.status(200).json({
       message: "PASSWORD_RESET_EMAIL_SENT",
     });
