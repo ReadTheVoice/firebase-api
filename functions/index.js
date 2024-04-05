@@ -31,7 +31,8 @@ const updateUserEmailFunction = require("./src/updateUserEmail.js");
 const updateUserProfileFunction = require("./src/updateUserProfile.js");
 const createMeetingFunction = require("./src/createMeeting.js");
 const deleteMeetingFunction = require("./src/deleteMeeting.js");
-const listMeetingFunction = require("./src/listMeeting.js");
+const listMeetingsFunction = require("./src/listMeetings.js");
+const getMeetingFunction = require("./src/getMeeting.js");
 const finishMeetingFunction = require("./src/finishMeeting.js");
 
 exports.signUp = onRequest({
@@ -94,14 +95,20 @@ exports.deleteMeeting = onRequest({
   deleteMeetingFunction.deleteMeeting(req, res);
 }));
 
-exports.listMeeting = onRequest({
+exports.listMeetings = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
-  listMeetingFunction.listMeeting(req, res);
+  listMeetingsFunction.listMeetings(req, res);
 }));
 
 exports.finishMeeting = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
   finishMeetingFunction.finishMeeting(req, res);
+}));
+
+exports.getMeeting = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  getMeetingFunction.getMeeting(req, res);
 }));
