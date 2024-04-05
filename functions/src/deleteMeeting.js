@@ -35,6 +35,8 @@ exports.deleteMeeting = async function(req, res) {
 
     await meetingRef.delete();
 
+    await admin.database().ref(`transcripts/${meetingId}`).remove();
+
     return res.status(200).json({
       message: "MEETING_DELETED",
     });
