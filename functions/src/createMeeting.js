@@ -10,7 +10,8 @@ exports.createMeeting = async function(req, res) {
       name,
       description = "",
       isTranscriptAccessibleAfter = true,
-      isFinished = false,
+      scheduledDate,
+      deletionDate,
       token,
     } = req.body;
 
@@ -26,13 +27,20 @@ exports.createMeeting = async function(req, res) {
       name,
       description,
       isTranscriptAccessibleAfter,
-      isFinished,
       creator: userId,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
+      isFinished: false,
       endDate: null,
+      scheduledDate: admin.firestore.Timestamp.fromDate(new Date(scheduledDate)),
+      deletionDate: deletionDate ? admin.firestore.Timestamp.fromDate(new Date(deletionDate)) : null,
     };
 
     const meetingRef = await admin.firestore().collection("meetings").add(meetingData);
+
+    const transcriptData = {
+      data: "",
+    };
+    await admin.database().ref(`transcripts/${meetingRef.id}`).set(transcriptData);
 
     return res.status(200).json({
       message: "MEETING_CREATED",
