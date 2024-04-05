@@ -4,7 +4,7 @@ const {
   verifyTokenAndGetUserId,
 } = require("./shared/verifyJwtToken");
 
-exports.listUserMeetings = async function(req, res) {
+exports.listMeetings = async function(req, res) {
   try {
     const {
       token,
@@ -20,6 +20,7 @@ exports.listUserMeetings = async function(req, res) {
 
     const meetingsSnapshot = await admin.firestore().collection("meetings")
         .where("creator", "==", userId)
+        .orderBy("createdAt", "desc")
         .get();
 
     if (meetingsSnapshot.empty) {
@@ -29,12 +30,21 @@ exports.listUserMeetings = async function(req, res) {
     }
 
     const meetings = [];
-    meetingsSnapshot.forEach((doc) => {
+    for (const doc of meetingsSnapshot.docs) {
+      const meetingData = doc.data();
+      const transcriptSnapshot = await admin.database().ref(`transcripts/${doc.id}`).once("value");
+      let state = 0;
+      if (transcriptSnapshot.exists() && transcriptSnapshot.val().data !== "") {
+        state = meetingData.isFinished ? 2 : 1;
+      } else {
+        state = meetingData.isFinished ? 2 : 0;
+      }
       meetings.push({
         id: doc.id,
-        ...doc.data(),
+        ...meetingData,
+        state,
       });
-    });
+    }
 
     return res.status(200).json({
       meetings,
