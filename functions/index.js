@@ -2,6 +2,9 @@ const admin = require("firebase-admin");
 const {
   onRequest,
 } = require("firebase-functions/v2/https");
+const {
+  onSchedule,
+} = require("firebase-functions/v2/scheduler");
 const logger = require("firebase-functions/logger");
 
 admin.initializeApp();
@@ -34,6 +37,7 @@ const deleteMeetingFunction = require("./src/deleteMeeting.js");
 const listMeetingsFunction = require("./src/listMeetings.js");
 const getMeetingFunction = require("./src/getMeeting.js");
 const finishMeetingFunction = require("./src/finishMeeting.js");
+const autoDeleteMeetingsFunction = require("./src/autoDeleteMeetings.js");
 
 exports.signUp = onRequest({
   region: "europe-west3",
@@ -112,3 +116,10 @@ exports.getMeeting = onRequest({
 }, verifyToken(async (req, res) => {
   getMeetingFunction.getMeeting(req, res);
 }));
+
+exports.autoDeleteMeetings = onSchedule({
+  region: "europe-west3",
+  schedule: "* * * * *",
+}, async (event) => {
+  autoDeleteMeetingsFunction.autoDeleteMeetings(event);
+});
