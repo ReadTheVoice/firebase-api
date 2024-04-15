@@ -37,6 +37,7 @@ const deleteMeetingFunction = require("./src/deleteMeeting.js");
 const listMeetingsFunction = require("./src/listMeetings.js");
 const getMeetingFunction = require("./src/getMeeting.js");
 const finishMeetingFunction = require("./src/finishMeeting.js");
+const updateMeetingFunction = require("./src/updateMeeting.js");
 const autoDeleteMeetingsFunction = require("./src/autoDeleteMeetings.js");
 
 exports.signUp = onRequest({
@@ -115,6 +116,12 @@ exports.getMeeting = onRequest({
   region: "europe-west3",
 }, verifyToken(async (req, res) => {
   getMeetingFunction.getMeeting(req, res);
+}));
+
+exports.updateMeeting = onRequest({
+  region: "europe-west3",
+}, verifyToken(async (req, res) => {
+  updateMeetingFunction.updateMeeting(req, res);
 }));
 
 exports.autoDeleteMeetings = onSchedule({
