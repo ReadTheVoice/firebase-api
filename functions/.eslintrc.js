@@ -13,16 +13,19 @@ module.exports = {
   rules: {
     "no-restricted-globals": ["error", "name", "length"],
     "prefer-arrow-callback": "error",
-    "quotes": ["error", "double", {"allowTemplateLiterals": true}],
+    "quotes": ["error", "double", {
+      "allowTemplateLiterals": true,
+    }],
+    "max-len": ["error", {
+      "code": 200,
+    }],
   },
-  overrides: [
-    {
-      files: ["**/*.spec.*"],
-      env: {
-        mocha: true,
-      },
-      rules: {},
+  overrides: [{
+    files: ["**/*.spec.*"],
+    env: {
+      mocha: true,
     },
-  ],
+    rules: {},
+  }],
   globals: {},
 };
